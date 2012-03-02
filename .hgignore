@@ -1,0 +1,23 @@
+syntax: regexp
+
+# ide
+^\.settings/
+^\.idea/
+^\.project
+^\.pydevproject
+^\.cache/
+
+# temp files
+\.pyc$
+\.pyo$
+\.orig$
+\.sw(n|o|p)$
+~$
+\.DS_Store
+Thumbs.db
+
+# build files
+^dist/
+^build/
+^MANIFEST$
+\.egg-info/
