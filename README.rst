@@ -2,7 +2,7 @@
 Fabric-taskset
 ==============
 
-`Fabric <fabfile.org>`_ has class-based tasks but they are
+`Fabric <http://fabfile.org>`_ has class-based tasks but they are
 limited: Task class represents a single task.
 
 This module make it possible to have class-based Fabric task sets.
