@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 import inspect
 import sys
+import types
 from fabric.tasks import WrappedCallableTask
 
 def task(*args, **kwargs):
@@ -93,6 +94,27 @@ class TaskSet(object):
         for name, task in self._get_fabric_tasks():
             setattr(module_obj, name, task)
             yield name
+    
+    def expose(self, module_name):
+        """
+        Adds tasks to module which name is last in ``module_name`` argument.
+        ``module_name`` is a module path, e.g. 'mod.submod1.submod2'. Zero-level
+        module, 'mod' in example, must not exist in global namespace.
+        """
+        mod_list = module_name.split('.')
+        # zero-level module must not exist
+        if mod_list[0] in sys.modules:
+            global_mod = sys.modules[mod_list[0]]
+        else:
+            global_mod = types.ModuleType(mod_list[0])
+            sys.modules.setdefault(mod_list[0], global_mod)
+        cur_mod = global_mod
+        for mod_name in mod_list[1:]:
+            new_mod = types.ModuleType(mod_name)
+            setattr(cur_mod,mod_name,new_mod)
+            cur_mod = new_mod
+        for name, task in self._get_fabric_tasks():
+            setattr(cur_mod, name, task)
 
     def _is_task(self, func):
         return hasattr(func, '_task_info')
