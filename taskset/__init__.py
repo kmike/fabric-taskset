@@ -99,24 +99,19 @@ class TaskSet(object):
         """
         Adds tasks to module which name is last in ``module_name`` argument.
         ``module_name`` is a module path, e.g. 'mod.submod1.submod2'. 
-        Any modules touched are extended not replaced.
+        Each module from the module path will be created if absent and extended
+        otherwise.
         """
         mod_list = module_name.split('.')
-        # if zero-level module exists, take its object for
-        # addition instead of replacing
-        if mod_list[0] in sys.modules:
-            global_mod = sys.modules[mod_list[0]]
-        else:
-            global_mod = types.ModuleType(mod_list[0])
-            sys.modules.setdefault(mod_list[0], global_mod)
-        cur_mod = global_mod
-        for name_idx, mod_name in enumerate(mod_list[1:], 2):
-            new_mod = types.ModuleType(mod_name)
-            setattr(cur_mod, mod_name, new_mod)
-            sys.modules.setdefault('.'.join(mod_list[:name_idx]), new_mod)
-            cur_mod = new_mod
+        parent_module = None
+        for index, mod_name in enumerate(mod_list, 1):
+            full_name = '.'.join(mod_list[:index])
+            module = sys.modules.setdefault(full_name, types.ModuleType(mod_name))
+            if parent_module:
+                setattr(parent_module, mod_name, module)
+            parent_module = module
         for name, task in self._get_fabric_tasks():
-            setattr(cur_mod, name, task)
+            setattr(module, name, task)
 
     def _is_task(self, func):
         return hasattr(func, '_task_info')
