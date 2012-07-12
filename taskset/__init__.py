@@ -88,6 +88,11 @@ class TaskSet(object):
         frm = inspect.stack()[1]
         mod = inspect.getmodule(frm[0])
         return self.expose_to(mod.__name__)
+    
+    def expose_to_module(self, module):
+        """ Adds tasks to an existing module object. """
+        for name, task in self._get_fabric_tasks():
+            setattr(module, name, task)
 
     def _expose_to(self, module_name):
         module_obj = sys.modules[module_name]
@@ -95,24 +100,6 @@ class TaskSet(object):
             setattr(module_obj, name, task)
             yield name
     
-    def expose(self, module_name):
-        """
-        Adds tasks to module which name is last in ``module_name`` argument.
-        ``module_name`` is a module path, e.g. 'mod.submod1.submod2'. 
-        Each module from the module path will be created if absent and extended
-        otherwise.
-        """
-        mod_list = module_name.split('.')
-        parent_module = None
-        for index, mod_name in enumerate(mod_list, 1):
-            full_name = '.'.join(mod_list[:index])
-            module = sys.modules.setdefault(full_name, types.ModuleType(mod_name))
-            if parent_module:
-                setattr(parent_module, mod_name, module)
-            parent_module = module
-        for name, task in self._get_fabric_tasks():
-            setattr(module, name, task)
-
     def _is_task(self, func):
         return hasattr(func, '_task_info')
 
