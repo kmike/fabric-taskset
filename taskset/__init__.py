@@ -89,12 +89,12 @@ class TaskSet(object):
         mod = inspect.getmodule(frm[0])
         return self.expose_to(mod.__name__)
     
-    def expose_as_module(self, module_name):
+    def expose_as_module(self, module_name, module_type=types.ModuleType):
         """ 
-        Creates new module named ``module_name`` populates it with tasks
-        and returns it. 
+        Creates new module of type ``module_type`` and named ``module_name`` 
+        populates it with tasks and returns it. 
         """
-        module = types.ModuleType(module_name)
+        module = module_type(module_name)
         for name, task in self._get_fabric_tasks():
             setattr(module, name, task)
         return module
