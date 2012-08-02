@@ -5,7 +5,7 @@ import sys
 import types
 from fabric.tasks import WrappedCallableTask
 
-def task(*args, **kwargs):
+def task_method(*args, **kwargs):
     """
     Decorator declaring the wrapped method to be task.
 
