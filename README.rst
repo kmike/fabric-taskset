@@ -21,14 +21,45 @@ Usage
 
 Example::
 
-    # my_lib/say.py
-    from taskset import TaskSet, task
+
+    # fabfile.py
+    from taskset import TaskSet, task_method
 
     class SayBase(TaskSet):
         def say(self, what):
             raise NotImplemented()
 
-        @task(default=True, alias='hi')
+        @task_method(default=True, alias='hi')
+        def hello(self):
+            self.say('hello')
+
+    class EchoSay(SayBase):
+        def say(self, what):
+            local('echo ' + what)
+
+    say = EchoSay().expose_as_module('say')
+
+
+and then e.g.::
+
+    $ fab say.hi
+    hello
+
+
+``taskset.task_method`` is a decorator declaring the wrapped method to be task.
+It acceps the same arguments as ``fabric.decorators.task`` so
+use it on methods just like fabric's decorator is used on functions.
+
+You can also create an "on-disk" Python module and populate it with tasks::
+
+    # my_lib/say.py
+    from taskset import TaskSet, task_method
+
+    class SayBase(TaskSet):
+        def say(self, what):
+            raise NotImplemented()
+
+        @task_method(default=True, alias='hi')
         def hello(self):
             self.say('hello')
 
@@ -42,15 +73,6 @@ Example::
     # fabfile.py
     from mylib import say
 
-and then e.g.::
-
-    $ fab say.hi
-    hello
-
-
-``taskset.task`` is a decorator declaring the wrapped method to be task.
-It acceps the same arguments as ``fabric.decorators.task`` so
-use it on methods just like fabric's decorator is used on functions.
 
 
 Acknowledgements

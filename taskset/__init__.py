@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import inspect
 import sys
 import types
+import warnings
 from fabric.tasks import WrappedCallableTask
 
 def task_method(*args, **kwargs):
@@ -29,6 +30,10 @@ def task_method(*args, **kwargs):
 
     return decorator if invoked else decorator(func)
 
+def task(*args, **kwargs):
+    msg = "@taskset.task decorator is deprecated and will be removed soon; please use @taskset.task_method instead."
+    warnings.warn(msg, DeprecationWarning)
+    return task_method(*args, **kwargs)
 
 
 class TaskSet(object):
@@ -88,11 +93,11 @@ class TaskSet(object):
         frm = inspect.stack()[1]
         mod = inspect.getmodule(frm[0])
         return self.expose_to(mod.__name__)
-    
+
     def expose_as_module(self, module_name, module_type=types.ModuleType):
-        """ 
-        Creates new module of type ``module_type`` and named ``module_name`` 
-        populates it with tasks and returns it. 
+        """
+        Creates a new module of type ``module_type`` and named ``module_name``,
+        populates it with tasks and returns this newly created module.
         """
         module = module_type(module_name)
         for name, task in self._get_fabric_tasks():
@@ -104,7 +109,7 @@ class TaskSet(object):
         for name, task in self._get_fabric_tasks():
             setattr(module_obj, name, task)
             yield name
-    
+
     def _is_task(self, func):
         return hasattr(func, '_task_info')
 

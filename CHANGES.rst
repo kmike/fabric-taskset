@@ -1,0 +1,19 @@
+
+Changes
+=======
+
+0.2 (TBA)
+---------
+
+- ``@task`` decorator is deprecated and replaced with ``@task_method``.
+  This was a bad name because of ``@fabric.task`` decorator
+  (thanks Denis Untevskiy);
+- ``Taskset.expose_as_module`` method that allows to use TaskSet instances
+  from command line without creating dummy modules on disk
+  (thanks Denis Untevskiy).
+
+
+0.1 (2012-03-03)
+----------------
+
+Initial release.

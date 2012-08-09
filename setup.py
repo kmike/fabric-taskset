@@ -19,7 +19,7 @@ setup(
     license = 'MIT license',
     description = """ Expose class members as Fabric tasks """,
 
-    long_description = open('README.rst').read(),
+    long_description = open('README.rst').read() + open('CHANGES.rst').read(),
     requires = ['Fabric (>= 1.1)'],
 
     classifiers=(
