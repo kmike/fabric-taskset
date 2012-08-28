@@ -42,14 +42,15 @@ class TaskSet(object):
 
     Example::
 
-        # my_lib/say.py
-        from taskset import TaskSet, task
+        # fabfile.py
+        from fabric.api import local
+        from taskset import TaskSet, task_method
 
         class SayBase(TaskSet):
             def say(self, what):
                 raise NotImplemented()
 
-            @task(default=True, alias='hi')
+            @task_method(default=True, alias='hi')
             def hello(self):
                 self.say('hello')
 
@@ -57,11 +58,7 @@ class TaskSet(object):
             def say(self, what):
                 local('echo ' + what)
 
-        instance = EchoSay()
-        instance.expose_to_current_module()
-
-        # fabfile.py
-        from mylib import say
+        say = EchoSay().expose_as_module('say')
 
     and then::
 

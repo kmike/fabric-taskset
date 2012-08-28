@@ -23,15 +23,20 @@ Example::
 
 
     # fabfile.py
+    from fabric.api import local
     from taskset import TaskSet, task_method
 
     class SayBase(TaskSet):
         def say(self, what):
-            raise NotImplemented()
+            raise NotImplementedError()
 
         @task_method(default=True, alias='hi')
         def hello(self):
             self.say('hello')
+
+        @task_method
+        def bye(self):
+            self.say('goodbye')
 
     class EchoSay(SayBase):
         def say(self, what):
@@ -40,7 +45,15 @@ Example::
     say = EchoSay().expose_as_module('say')
 
 
-and then e.g.::
+and then::
+
+    $ fab -l
+    Available commands:
+
+        say
+        say.bye
+        say.hello
+        say.hi
 
     $ fab say.hi
     hello
@@ -53,11 +66,11 @@ use it on methods just like fabric's decorator is used on functions.
 You can also create an "on-disk" Python module and populate it with tasks::
 
     # my_lib/say.py
-    from taskset import TaskSet, task_method
+h    from taskset import TaskSet, task_method
 
     class SayBase(TaskSet):
         def say(self, what):
-            raise NotImplemented()
+            raise NotImplementedError()
 
         @task_method(default=True, alias='hi')
         def hello(self):
@@ -85,3 +98,6 @@ and has a small deployment framework included.
 In order to feed my NIH syndrome I create Fabric-taskset which
 exposes new-style Fabric tasks, provides slightly different API and doesn't
 have extra goodies.
+
+This library then evolves to support exposing tasks without creating dummy
+on-disk modules (thanks to Denis Untevskiy).

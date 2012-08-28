@@ -15,6 +15,7 @@ syntax: regexp
 ~$
 \.DS_Store
 Thumbs.db
+^fabfile.py$
 
 # build files
 ^dist/
