@@ -2,8 +2,8 @@
 Changes
 =======
 
-0.2 (TBA)
----------
+0.2 (2012-08-28)
+----------------
 
 - ``@task`` decorator is deprecated and replaced with ``@task_method``.
   This was a bad name because of ``@fabric.task`` decorator
