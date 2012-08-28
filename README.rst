@@ -66,7 +66,7 @@ use it on methods just like fabric's decorator is used on functions.
 You can also create an "on-disk" Python module and populate it with tasks::
 
     # my_lib/say.py
-h    from taskset import TaskSet, task_method
+    from taskset import TaskSet, task_method
 
     class SayBase(TaskSet):
         def say(self, what):
