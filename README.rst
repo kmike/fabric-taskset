@@ -99,5 +99,5 @@ In order to feed my NIH syndrome I create Fabric-taskset which
 exposes new-style Fabric tasks, provides slightly different API and doesn't
 have extra goodies.
 
-This library then evolves to support exposing tasks without creating dummy
+This library then evolved to support exposing tasks without creating dummy
 on-disk modules (thanks to Denis Untevskiy).
