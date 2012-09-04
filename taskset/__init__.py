@@ -73,7 +73,8 @@ class TaskSet(object):
             instance = MyTaskSet()
             __all__ = instance.expose_to(__name__)
         """
-        return list(self._expose_to(module_name))
+        module_obj = sys.modules[module_name]
+        return list(self._expose_to(module_obj))
 
     def expose_to_current_module(self):
         """
@@ -95,12 +96,10 @@ class TaskSet(object):
         populates it with tasks and returns it. 
         """
         module = module_type(module_name)
-        for name, task in self._get_fabric_tasks():
-            setattr(module, name, task)
+        module.__all__ = list(self._expose_to(module))
         return module
 
-    def _expose_to(self, module_name):
-        module_obj = sys.modules[module_name]
+    def _expose_to(self, module_obj):
         for name, task in self._get_fabric_tasks():
             setattr(module_obj, name, task)
             yield name
