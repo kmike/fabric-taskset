@@ -66,14 +66,15 @@ class TaskSet(object):
     def expose_to(self, module_name):
         """
         Adds tasks to module which name is passed in ``module_name`` argument.
-        
+        Returns a list of added tasks names.
+
         Example::
 
             instance = MyTaskSet()
-            instance.expose_to(__name__)
+            __all__ = instance.expose_to(__name__)
         """
         module_obj = sys.modules[module_name]
-        self._expose_to(module_obj)
+        return self._expose_to(module_obj)
 
     def expose_to_current_module(self):
         """
@@ -82,11 +83,12 @@ class TaskSet(object):
 
         Example::
 
-            MyTaskSet().expose_to_current_module()
+            instance = MyTaskSet()
+            __all__ = instance.expose_to_current_module()
         """
         frm = inspect.stack()[1]
         mod = inspect.getmodule(frm[0])
-        self.expose_to(mod.__name__)
+        return self.expose_to(mod.__name__)
     
     def expose_as_module(self, module_name, module_type=types.ModuleType):
         """ 
@@ -98,8 +100,11 @@ class TaskSet(object):
         return module
 
     def _expose_to(self, module_obj):
+        task_list = []
         for name, task in self._get_fabric_tasks():
             setattr(module_obj, name, task)
+            task_list.append(name)
+        return task_list
     
     def _is_task(self, func):
         return hasattr(func, '_task_info')
