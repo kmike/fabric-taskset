@@ -2,6 +2,11 @@
 Changes
 =======
 
+0.2.1 (2012-09-21)
+------------------
+
+- private ``_expose_to`` method now returns list, not generator.
+
 0.2 (2012-08-28)
 ----------------
 
