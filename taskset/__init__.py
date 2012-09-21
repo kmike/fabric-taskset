@@ -10,7 +10,7 @@ def task_method(*args, **kwargs):
     """
     Decorator declaring the wrapped method to be task.
 
-    It acceps the same arguments as ``fabric.decorators.task`` so
+    It accepts the same arguments as ``fabric.decorators.task`` so
     use it on methods just like fabric's decorator is used on functions.
 
     The class decorated method belongs to should be a subclass
@@ -76,7 +76,7 @@ class TaskSet(object):
             __all__ = instance.expose_to(__name__)
         """
         module_obj = sys.modules[module_name]
-        return list(self._expose_to(module_obj))
+        return self._expose_to(module_obj)
 
     def expose_to_current_module(self):
         """
@@ -98,13 +98,15 @@ class TaskSet(object):
         populates it with tasks and returns this newly created module.
         """
         module = module_type(module_name)
-        module.__all__ = list(self._expose_to(module))
+        self._expose_to(module)
         return module
 
     def _expose_to(self, module_obj):
+        task_list = []
         for name, task in self._get_fabric_tasks():
             setattr(module_obj, name, task)
-            yield name
+            task_list.append(name)
+        return task_list
 
     def _is_task(self, func):
         return hasattr(func, '_task_info')
